@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table style="max-width: 600px; padding: 10px; margin: 0 auto; border-collapse: collapse;">
+        <tr>
+            <td style="background-color: #ecf0f1; text-align: left; padding: 0; ">
+                <img width="10%" style="display:block; margin: 1.5% 3%" src="https://i.postimg.cc/TYHKVQtB/iea.png">
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0; font-weight: bold;
+            color: #000000;">
+                <img style="padding: 0; display: block" src="https://i.postimg.cc/jSw-LZN92/orientacion.jpg" width="100%">
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: #ecf0f1">
+                <div style=" margin: 4% 10% 2%; text-align: justify; font-family: sans-serif;">
+                    <h2 style="color: #252b5c; margin: 0 0 7px; text-align: center;">Hola {{ strNombre }}</h2>
+                    <p style="margin: 2px; font-size: 15px; text-align: center;">
+                        ¡Gracias por contestar el Test de Orientacion Vocacional!
+                    </p>
+                    <p style="margin: 2px; font-size: 15px; text-align: center;">A continuación se te muestra la información de tu perfil segun tus respuestas en el test</p>
+                    <div style="text-align: center;">
+                        <h3 style="color:#252b5c;">{{ strPerfil }}</h3>
+                        <p style="margin: 2px; font-size: 12px;">
+                            {{ strDesc }}
+                        </p>
+                    </div>
+                    <div style="width: 100%; margin:20px 0; display: inline-block; text-align: center;">
+                        <a style="text-decoration: none; border-radius: 30px; padding: 11px 23px; color: white; background-color: #3498db" href="http://test.utags.edu.mx/#/retroalimentacion/{{ _id }}">Ver detalles...</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
