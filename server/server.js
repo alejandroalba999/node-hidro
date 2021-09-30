@@ -11,7 +11,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const momentTime = require('moment-timezone');
 // Subir archivos
+momentTime().tz("America/Mexico_City")
 app.use(fileUpload());
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
