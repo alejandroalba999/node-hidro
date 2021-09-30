@@ -4,10 +4,11 @@ const HelperSearch = require('../../libraries/helperSearch');
 const subidorArchivos = require('../../libraries/subirArchivo');
 const mongoose = require('mongoose');
 // const moment = require('moment');
-const moment = require('moment-timezone');
+const moment = require('moment');
 const ObjectId = require('mongoose').Types.ObjectId;
 const express = require("express");
 const participanteModel = require("../../models/participante.model");
+const { locale } = require("moment");
 const app = express();
 const totalParticipantes = 70;
 app.get('/', async (req, res) => {
@@ -182,7 +183,7 @@ app.get('/fecha', async (req, res) => {
             },
             {
 
-                $match: { creationDate: { $gte: moment().tz("America/Mexico_City").add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: moment().locale('es-mx').subtract(moment().isDST() ? 5 : 6, 'hours').add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
 
             },
             {
@@ -194,14 +195,14 @@ app.get('/fecha', async (req, res) => {
             }
 
         ]);
-        moment().tz()
         if (conferencias.length <= 0) return res.status(404).json({
             ok: false,
             resp: 404,
             msg: 'No se encontraron conferencias para mostrar.',
             cont: {
                 count: conferencias.length,
-                conferencias
+                conferencias,
+                moment: moment().locale('es-mx').subtract(moment().isDST() ? 5 : 6, 'hours')
             }
         });
         return res.status(200).json({
@@ -210,7 +211,8 @@ app.get('/fecha', async (req, res) => {
             msg: 'Se han consultado las conferencias exitosamente.',
             cont: {
                 count: conferencias.length,
-                conferencias
+                conferencias,
+                moment: moment().locale('es-mx').subtract(moment().isDST() ? 5 : 6, 'hours')
             }
         });
     } catch (err) {
