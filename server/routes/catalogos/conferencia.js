@@ -149,7 +149,7 @@ app.get('/fecha', async (req, res) => {
                 $addFields: { "creationDate": { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$dteFechaInicio" } } }
             },
             {
-                $match: { creationDate: { $gte: momentime().tz('America/Mexico_City').add(momentime().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: momentime().tz("America/Mexico_City").add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
             },
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
