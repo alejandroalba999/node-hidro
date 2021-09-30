@@ -5,12 +5,14 @@ const subidorArchivos = require('../../libraries/subirArchivo');
 const mongoose = require('mongoose');
 // const moment = require('moment');
 const moment = require('moment');
+require('moment/locale/es-mx');
 const ObjectId = require('mongoose').Types.ObjectId;
 const express = require("express");
 const participanteModel = require("../../models/participante.model");
 const { locale } = require("moment");
 const app = express();
 const totalParticipantes = 70;
+
 app.get('/', async (req, res) => {
 
     try {
@@ -202,7 +204,8 @@ app.get('/fecha', async (req, res) => {
             cont: {
                 count: conferencias.length,
                 conferencias,
-                moment: moment().locale('es-mx').format('YYYY-MM-DD HH:mm')
+                moment: moment().locale('es-mx').format('YYYY-MM-DD HH:mm'),
+                momentLocale: moment().locale()
             }
         });
         return res.status(200).json({
@@ -212,7 +215,8 @@ app.get('/fecha', async (req, res) => {
             cont: {
                 count: conferencias.length,
                 conferencias,
-                moment: moment().locale('es-mx').format('YYYY-MM-DD HH:mm')
+                moment: moment().locale('es-mx').format('YYYY-MM-DD HH:mm'),
+                momentLocale: moment().locale()
             }
         });
     } catch (err) {
