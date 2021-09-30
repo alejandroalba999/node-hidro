@@ -204,7 +204,7 @@ app.get('/fecha', async (req, res) => {
             cont: {
                 count: conferencias.length,
                 conferencias,
-                moment: moment().format('YYYY-MM-DD HH:mm'),
+                moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
                 momentLocale: moment().locale()
             }
         });
@@ -215,7 +215,7 @@ app.get('/fecha', async (req, res) => {
             cont: {
                 count: conferencias.length,
                 conferencias,
-                moment: moment().format('YYYY-MM-DD HH:mm'),
+                moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
                 momentLocale: moment().locale()
             }
         });
