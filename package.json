@@ -26,6 +26,7 @@
         "hogan": "^1.0.2",
         "hogan.js": "^3.0.2",
         "moment": "^2.29.1",
+        "moment-timezone": "^0.5.33",
         "mongoose": "^5.13.9",
         "mongoose-unique-validator": "^2.0.3",
         "nodemailer": "^6.4.2",

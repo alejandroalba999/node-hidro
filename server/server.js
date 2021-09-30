@@ -11,10 +11,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const moment = require('moment');
 // Subir archivos
 app.use(fileUpload());
-moment.locale('es-mx');
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

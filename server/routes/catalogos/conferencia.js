@@ -3,12 +3,13 @@ const ParticipanteModel = require("../../models/participante.model");
 const HelperSearch = require('../../libraries/helperSearch');
 const subidorArchivos = require('../../libraries/subirArchivo');
 const mongoose = require('mongoose');
-const moment = require('moment');
+// const moment = require('moment');
+const moment = require('moment-timezone');
 const ObjectId = require('mongoose').Types.ObjectId;
 const express = require("express");
 const participanteModel = require("../../models/participante.model");
 const app = express();
-
+const totalParticipantes = 70;
 app.get('/', async (req, res) => {
 
     try {
@@ -31,7 +32,7 @@ app.get('/', async (req, res) => {
                 }
             },
             { $addFields: { numParticipantes: { $size: "$arrIdParticipante" } } },
-            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
+            { $addFields: { participantesRestantes: { $subtract: [totalParticipantes, { $size: "$arrIdParticipante" }] } } },
 
         ]);
 
@@ -181,19 +182,19 @@ app.get('/fecha', async (req, res) => {
             },
             {
 
-                $match: { creationDate: { $gte: moment().locale('es-mx').add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: moment().tz("America/Mexico_City").add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
 
             },
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
             },
-            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
+            { $addFields: { participantesRestantes: { $subtract: [totalParticipantes, { $size: "$arrIdParticipante" }] } } },
             {
                 $sort: { dteFechaInicio: 1 }
             }
 
         ]);
-
+        moment().tz()
         if (conferencias.length <= 0) return res.status(404).json({
             ok: false,
             resp: 404,
