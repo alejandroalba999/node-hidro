@@ -8,7 +8,6 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const express = require("express");
 const participanteModel = require("../../models/participante.model");
 const app = express();
-const cupoParticipantes = 10;
 
 app.get('/', async (req, res) => {
 
@@ -32,7 +31,7 @@ app.get('/', async (req, res) => {
                 }
             },
             { $addFields: { numParticipantes: { $size: "$arrIdParticipante" } } },
-            { $addFields: { participantesRestantes: { $subtract: [cupoParticipantes, { $size: "$arrIdParticipante" }] } } },
+            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
 
         ]);
 
@@ -107,7 +106,7 @@ app.patch('/', async (req, res) => {
         let conferenciaBody = new ConferenciaModel(req.body);
         let participanteBody = new ParticipanteModel(req.body);
         const idConferencia = req.query.idConferencia;
-
+        console.log(idConferencia, participanteBody);
         if (!ObjectId.isValid(idConferencia)) return res.status(400).json({
             ok: false,
             resp: 400,
@@ -115,13 +114,6 @@ app.patch('/', async (req, res) => {
             cont: {
                 idConferencia: ObjectId.isValid(idConferencia),
             }
-        });
-
-        let totalParticipantes = await ConferenciaModel.aggregate([{ $match: { _id: ObjectId(idConferencia) } }, { $addFields: { participantesRestantes: { $subtract: [cupoParticipantes, { $size: "$arrIdParticipante" }] } } }, { $project: { participantesRestantes: 1 } }])
-        if (totalParticipantes[0].participantesRestantes < 1) return res.status(400).json({
-            ok: false,
-            resp: 400,
-            msg: 'La conferencia llego al limite de participantes',
         });
 
         const arrIdParticipante = req.body.arrIdParticipante;
@@ -193,7 +185,7 @@ app.get('/fecha', async (req, res) => {
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
             },
-            { $addFields: { participantesRestantes: { $subtract: [cupoParticipantes, { $size: "$arrIdParticipante" }] } } },
+            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
             {
                 $sort: { dteFechaInicio: 1 }
             }
@@ -228,7 +220,6 @@ app.get('/fecha', async (req, res) => {
             }
         });
     }
-
 });
 
 
