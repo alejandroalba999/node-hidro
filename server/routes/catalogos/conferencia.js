@@ -180,7 +180,9 @@ app.get('/fecha', async (req, res) => {
                 $addFields: { "creationDate": { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$dteFechaInicio" } } }
             },
             {
-                $match: { creationDate: { $gte: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+
+                $match: { creationDate: { $gte: moment().locale('es-mx').add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+
             },
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
