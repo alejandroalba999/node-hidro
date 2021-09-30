@@ -11,7 +11,7 @@ class Mailer {
             auth: { user: process.env.STRCORREO, pass: process.env.STRPASSWORD }
         });
         this.mailOptions = {
-            from: `"Networking Modelo de Formación Dual" <${process.env.STRCORREO}>`
+            from: `"Networking “Modelo de Formación Dual”" <${process.env.STRCORREO}>`
 
         };
     }

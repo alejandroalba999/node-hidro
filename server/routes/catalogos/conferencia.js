@@ -30,7 +30,8 @@ app.get('/', async (req, res) => {
                     ]
                 }
             },
-            { $addFields: { numParticipantes: { $size: "$arrIdParticipante" } } }
+            { $addFields: { numParticipantes: { $size: "$arrIdParticipante" } } },
+            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
 
         ]);
 
@@ -184,6 +185,7 @@ app.get('/fecha', async (req, res) => {
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
             },
+            { $addFields: { participantesRestantes: { $subtract: [9, { $size: "$arrIdParticipante" }] } } },
             {
                 $sort: { dteFechaInicio: 1 }
             }
@@ -219,6 +221,7 @@ app.get('/fecha', async (req, res) => {
         });
     }
 });
+
 
 
 
