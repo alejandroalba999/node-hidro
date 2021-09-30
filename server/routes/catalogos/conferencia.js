@@ -5,7 +5,7 @@ const subidorArchivos = require('../../libraries/subirArchivo');
 const mongoose = require('mongoose');
 // const moment = require('moment');
 const moment = require('moment');
-require('moment/locale/es-mx');
+const momentTime = require('moment-timezone');
 const ObjectId = require('mongoose').Types.ObjectId;
 const express = require("express");
 const participanteModel = require("../../models/participante.model");
@@ -185,7 +185,7 @@ app.get('/fecha', async (req, res) => {
             },
             {
 
-                $match: { creationDate: { $gte: moment.locale() == 'es-mx' ? moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') : moment().format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: moment().tz('America/Mexico_City').add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
 
             },
             {
@@ -205,7 +205,7 @@ app.get('/fecha', async (req, res) => {
                 count: conferencias.length,
                 conferencias,
                 moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
-                momentLocale: moment().locale()
+                momentLocale: momentTime().tz('America/Mexico_City')
             }
         });
         return res.status(200).json({
@@ -216,7 +216,7 @@ app.get('/fecha', async (req, res) => {
                 count: conferencias.length,
                 conferencias,
                 moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
-                momentLocale: moment().locale()
+                momentLocale: momentTime().tz('America/Mexico_City')
             }
         });
     } catch (err) {
