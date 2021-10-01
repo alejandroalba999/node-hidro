@@ -185,7 +185,7 @@ app.get('/fecha', async (req, res) => {
             },
             {
 
-                $match: { creationDate: { $gte: moment().tz('America/Mexico_City').format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
 
             },
             {
@@ -205,7 +205,7 @@ app.get('/fecha', async (req, res) => {
                 count: conferencias.length,
                 conferencias,
                 moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
-                momentLocale: moment().tz('America/Mexico_City').format('YYYY-MM-DD HH:mm')
+                momentLocale: moment().tz('es-mx').format('YYYY-MM-DD HH:mm')
             }
         });
         return res.status(200).json({
@@ -216,7 +216,7 @@ app.get('/fecha', async (req, res) => {
                 count: conferencias.length,
                 conferencias,
                 moment: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm'),
-                momentLocale: moment().tz('America/Mexico_City').format('YYYY-MM-DD HH:mm')
+                momentLocale: moment().tz('es-mx').format('YYYY-MM-DD HH:mm')
             }
         });
     } catch (err) {
