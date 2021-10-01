@@ -185,7 +185,7 @@ app.get('/fecha', async (req, res) => {
             },
             {
 
-                $match: { creationDate: { $gte: moment().add(moment().isDST() ? 5 : 6, 'hours').format('YYYY-MM-DD HH:mm') } }
+                $match: { creationDate: { $gte: moment().tz('es-mx').format('YYYY-MM-DD HH:mm') } }
 
             },
             {
