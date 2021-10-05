@@ -61,14 +61,18 @@ app.post('/obtenerEncuestas', async (req, res) => {
                     }
                 },
             ]);
-            res.status(400).json({
-                ok: true,
-                resp: 400,
-                msg: 'Encuesta obtenida exitosamente',
-                cont: {
-                    encuestas
-                }
-            })
+
+            if (encuestas) {
+                res.status(200).json({
+                    ok: true,
+                    resp: 400,
+                    msg: 'Encuesta obtenida exitosamente',
+                    cont: {
+                        encuestas
+                    }
+                })
+            }
+
         }
     } catch (err) {
         return res.status(500).json({
