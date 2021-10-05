@@ -51,26 +51,13 @@ app.post('/obtenerEncuestas', async (req, res) => {
                                     as: "arrIdRespuesta"
                                 }
                             }],
-                        // localField: "arrIdPregunta",
-                        // foreignField: "_id",
                         as: "preguntaEncuesta"
                     }
                 },
-                // {
-                //     $lookup: {
-                //         from: "respuesta",
-                //         localField: "preguntaEncuesta.arrIdRespuesta",
-                //         foreignField: "_id",
-                //         as: "respuestaEncuesta"
-                //     }
-                // },
                 {
                     $project: {
                         strNombre: 1,
                         preguntaEncuesta: 1,
-
-                        // pregunta: 1,
-                        // respuestaEncuesta: 1,
                     }
                 },
             ]);
