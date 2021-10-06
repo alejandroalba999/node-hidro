@@ -68,7 +68,8 @@ app.post('/obtenerEncuestas', async (req, res) => {
                     resp: 400,
                     msg: 'Encuesta obtenida exitosamente',
                     cont: {
-                        encuestas
+                        encuestas,
+                        idParticipante: correoEncontrado._id
                     }
                 })
             }
