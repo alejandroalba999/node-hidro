@@ -1,5 +1,6 @@
 const ConferenciaModel = require("../../models/conferencia.model");
 const ParticipanteModel = require("../../models/participante.model");
+const EncuestaModel = require("../../models/encuesta/encuestaParticipante");
 const express = require("express");
 const app = express();
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -120,5 +121,43 @@ app.get('/conferencias', async (req, res) => {
         })
     }
 })
+
+app.get('/reporteEncuesta', async (req, res) => {
+
+    try {
+        const encuesta = await EncuestaModel.aggregate([
+            {
+                $group:
+                {
+                    "_id": "$idParticipante", preguntasRealizadas:
+                    {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "participante",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "persona"
+                }
+            }
+        ])
+
+        res.status(200).json({
+            cont: {
+                encuesta
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            cont: {
+                err: error
+            }
+        })
+    }
+
+});
 
 module.exports = app;

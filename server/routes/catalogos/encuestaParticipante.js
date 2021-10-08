@@ -7,44 +7,49 @@ const app = express();
 
 app.post('/', async (req, res) => {
     try {
+        let array = [];
         let encuestaParticipanteBody = req.body;
-        const respuestaOpcional = false;
-        const respPcional = false;
-
+        let preguntaOpcional = false;
         encuestaParticipanteBody.forEach((element, index) => {
-            if (index == 3 && element.idRespuesta == '615c741be2f9b53700e48c71') {
-                console.log(element, index);
-                respuestaOpcional = true;
+            if (index == 3 && element.idRespuesta == '615c741be2f9b53700e48c71' && encuestaParticipanteBody.length > 6) {
+                preguntaOpcional = true;
             }
-            if (index > 5) {
-                console.log('7 preguntas');
-                respPcional = true;
-            }
-            if (respuestaOpcional && respPcional) {
-
-            }
-
         });
+        if (preguntaOpcional) {
+            encuestaParticipanteBody.forEach((preg, index) => {
+                if (index != 4) {
+                    array.push(preg)
+                }
+            });
+        } else {
+            encuestaParticipanteBody.forEach((preg, index) => {
 
-        // const encuestaRegistrada = await EnccuestaParticipanteModel.insertMany(encuestaParticipanteBody);
+                array.push(preg)
 
-        // if (encuestaRegistrada) {
-        //     res.status(200).json({
-        //         ok: true,
-        //         resp: 200,
-        //         msg: 'Las respuestas se registrarón exitosamente',
-        //         cont: {
-        //             encuestaRegistrada
-        //         }
-        //     })
-        // } else {
-        //     res.status(400).json({
-        //         ok: true,
-        //         resp: 200,
-        //         msg: 'Error al registrar las respuestas',
-        //     })
-        // }
+            });
+        }
+
+        console.log(array.length);
+        const encuestaRegistrada = await EnccuestaParticipanteModel.insertMany(array);
+
+        if (encuestaRegistrada) {
+            res.status(200).json({
+                ok: true,
+                resp: 200,
+                msg: 'Las respuestas se registrarón exitosamente',
+                cont: {
+                    encuestaRegistrada
+                }
+            })
+        } else {
+            res.status(400).json({
+                ok: true,
+                resp: 200,
+                msg: 'Error al registrar las respuestas',
+            })
+        }
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             ok: false,
             resp: 500,
