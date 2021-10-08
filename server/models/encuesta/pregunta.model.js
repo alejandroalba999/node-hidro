@@ -15,6 +15,10 @@ let preguntaSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'respuesta'
     }],
+    blnOpcional: {
+        type: Boolean,
+        default: false
+    },
     blnActivo: {
         type: Boolean,
         default: true

@@ -15,7 +15,8 @@ const subirArchivo = async (file, route, exts) => {
     }
 
     await file.mv(path.resolve(__dirname, `../../uploads/${route}/${nameImg}`)).catch((error) => {
-        throw new Error('Error al tratar de subir el archivo al servidor');
+        console.log(error);
+        throw new Error('Error al tratar de subir el archivo al servidor', error);
     });
 
     return nameImg;

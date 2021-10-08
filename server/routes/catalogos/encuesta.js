@@ -2,6 +2,7 @@ const EncuestaModel = require("../../models/encuesta/encuesta.model");
 const PreguntaModel = require("../../models/encuesta/pregunta.model");
 const RespuestaModel = require("../../models/encuesta/respuesta.model");
 const ParticipanteModel = require("../../models/participante.model");
+const EnccuestaParticipanteModel = require("../../models/encuesta/encuestaParticipante");
 const ObjectId = require('mongoose').Types.ObjectId;
 const mongoose = require('mongoose');
 const express = require("express");
@@ -14,7 +15,7 @@ app.post('/obtenerEncuestas', async (req, res) => {
         const correoEncontrado = await ParticipanteModel.findOne({ strCorreo: correo });
         if (!correoEncontrado) {
             res.status(400).json({
-                ok: true,
+                ok: false,
                 resp: 400,
                 msg: 'El correo no se encuentra registrado.',
                 cont: {
@@ -22,57 +23,71 @@ app.post('/obtenerEncuestas', async (req, res) => {
                 }
             })
         } else {
-            const encuestas = await EncuestaModel.aggregate([
-                {
-                    $lookup: {
-                        from: "pregunta",
-                        let: { arrIdPregunta: "$arrIdPregunta" },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $in: ["$_id", "$$arrIdPregunta"]
-                                    }
-                                }
-                            },
-                            {
-                                $lookup: {
-                                    from: "respuesta",
-                                    let: { arrIdRespuesta: "$arrIdRespuesta" },
-                                    pipeline: [
-                                        {
-                                            $match: {
-                                                $expr: {
-                                                    $in: ["$_id", "$$arrIdRespuesta"]
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    as: "arrIdRespuesta"
-                                }
-                            }],
-                        as: "preguntaEncuesta"
-                    }
-                },
-                {
-                    $project: {
-                        strNombre: 1,
-                        preguntaEncuesta: 1,
-                    }
-                },
-            ]);
-
-            if (encuestas) {
-                res.status(200).json({
-                    ok: true,
+            const encuestaRealizada = await EnccuestaParticipanteModel.findOne({ idParticipante: correoEncontrado._id });
+            if (encuestaRealizada) {
+                res.status(400).json({
+                    ok: false,
                     resp: 400,
-                    msg: 'Encuesta obtenida exitosamente',
+                    msg: 'La encuesta ha sido realizada.',
                     cont: {
-                        encuestas,
-                        idParticipante: correoEncontrado._id
+                        correo,
+                        encuestaRealizada
                     }
                 })
+            } else {
+                const encuestas = await EncuestaModel.aggregate([
+                    {
+                        $lookup: {
+                            from: "pregunta",
+                            let: { arrIdPregunta: "$arrIdPregunta" },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $in: ["$_id", "$$arrIdPregunta"]
+                                        }
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: "respuesta",
+                                        let: { arrIdRespuesta: "$arrIdRespuesta" },
+                                        pipeline: [
+                                            {
+                                                $match: {
+                                                    $expr: {
+                                                        $in: ["$_id", "$$arrIdRespuesta"]
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        as: "arrIdRespuesta"
+                                    }
+                                }],
+                            as: "preguntaEncuesta"
+                        }
+                    },
+                    {
+                        $project: {
+                            strNombre: 1,
+                            preguntaEncuesta: 1,
+                        }
+                    },
+                ]);
+
+                if (encuestas) {
+                    res.status(200).json({
+                        ok: true,
+                        resp: 400,
+                        msg: 'Encuesta obtenida exitosamente',
+                        cont: {
+                            encuestas,
+                            idParticipante: correoEncontrado._id
+                        }
+                    })
+                }
             }
+
 
         }
     } catch (err) {

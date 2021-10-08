@@ -7,4 +7,5 @@ app.use('/participante', require('./catalogos/participante'))
 app.use('/conferencia', require('./catalogos/conferencia'))
 app.use('/reporte', require('./catalogos/reporte'))
 app.use('/encuesta', require('./catalogos/encuesta'))
+app.use('/encuestaParticipante', require('./catalogos/encuestaParticipante'))
 module.exports = app;
