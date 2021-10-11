@@ -163,6 +163,43 @@ app.get('/reporteEncuesta', async (req, res) => {
                                             idPregunta: 1,
                                             idRespuesta: 1
                                         }
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: 'pregunta',
+                                            let: { idPregunta: "$idPregunta" },
+                                            pipeline: [
+                                                {
+                                                    $match: {
+                                                        $expr: {
+                                                            $eq: ["$_id", "$$idPregunta"]
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    $project: {
+                                                        strPregunta: 1
+                                                    }
+                                                },
+                                            ],
+                                            as: "pregunta"
+                                        }
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: "respuesta",
+                                            let: { idRespuesta: "$idRespuesta" },
+                                            pipeline: [
+                                                {
+                                                    $match: {
+                                                        $expr: {
+                                                            $eq: ["$_id", "$$idRespuesta"]
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            as: "respuesta"
+                                        }
                                     }
                                 ],
                                 as: "encuesta"
