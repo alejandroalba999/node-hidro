@@ -138,11 +138,50 @@ app.get('/reporteEncuesta', async (req, res) => {
             {
                 $lookup: {
                     from: "participante",
-                    localField: "_id",
-                    foreignField: "_id",
+                    let: { idPersona: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$idPersona"]
+                                }
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "encuestaParticipante",
+                                let: { idPersonaEncuestada: "$_id" },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $eq: ["$idParticipante", "$$idPersonaEncuestada"]
+                                            }
+                                        }
+                                    }, {
+                                        $project: {
+                                            idPregunta: 1,
+                                            idRespuesta: 1
+                                        }
+                                    }
+                                ],
+                                as: "encuesta"
+                            }
+                        }
+
+                    ],
                     as: "persona"
                 }
             }
+            // {
+            //     $lookup: {
+            //         from: "participante",
+            //         localField: "_id",
+            //         foreignField: "_id",
+            //         as: "persona"
+            //     }
+            // },
+
         ])
 
         res.status(200).json({
