@@ -11,25 +11,23 @@ app.post('/', async (req, res) => {
         let encuestaParticipanteBody = req.body;
         let preguntaOpcional = false;
         encuestaParticipanteBody.forEach((element, index) => {
-            if (index == 3 && element.idRespuesta == '615c741be2f9b53700e48c71' && encuestaParticipanteBody.length > 6) {
+            if (element.numeroPregunta == 3 && element.idRespuesta == '615c741be2f9b53700e48c71' && encuestaParticipanteBody.length > 6) {
                 preguntaOpcional = true;
             }
         });
         if (preguntaOpcional) {
-            encuestaParticipanteBody.forEach((preg, index) => {
-                if (index != 4) {
+            encuestaParticipanteBody.forEach((preg) => {
+                if (preg.numeroPregunta != 4) {
                     array.push(preg)
                 }
             });
         } else {
-            encuestaParticipanteBody.forEach((preg, index) => {
+            encuestaParticipanteBody.forEach((preg) => {
 
                 array.push(preg)
 
             });
         }
-
-        console.log(array.length);
         const encuestaRegistrada = await EnccuestaParticipanteModel.insertMany(array);
 
         if (encuestaRegistrada) {
