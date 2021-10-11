@@ -29,5 +29,5 @@ process.env.STRCORREO = 'notificaciones.desarrollo@utags.edu.mx';
 process.env.STRPASSWORD = `!9,G\\\\qEqU8p==>jE`;
 
 // URL del servidor del FrontEnd
-process.env.URL_FRONT = 'https://networking-2021.herokuapp.com/';
+process.env.URL_FRONT = 'https://networking-2021.herokuapp.com/#/';
 
