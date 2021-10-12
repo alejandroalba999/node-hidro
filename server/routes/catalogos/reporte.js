@@ -1,6 +1,8 @@
 const ConferenciaModel = require("../../models/conferencia.model");
 const ParticipanteModel = require("../../models/participante.model");
-const EncuestaModel = require("../../models/encuesta/encuestaParticipante");
+const EncuestaPersonaModel = require("../../models/encuesta/encuestaParticipante");
+const EncuestaModel = require("../../models/encuesta/encuesta.model");
+
 const express = require("express");
 const app = express();
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -125,7 +127,7 @@ app.get('/conferencias', async (req, res) => {
 app.get('/reporteEncuesta', async (req, res) => {
 
     try {
-        const encuesta = await EncuestaModel.aggregate([
+        const encuesta = await EncuestaPersonaModel.aggregate([
             {
                 $group:
                 {
@@ -178,7 +180,8 @@ app.get('/reporteEncuesta', async (req, res) => {
                                                 },
                                                 {
                                                     $project: {
-                                                        strPregunta: 1
+                                                        "strPregunta": 1,
+                                                        "_id": 0
                                                     }
                                                 },
                                             ],
@@ -196,34 +199,54 @@ app.get('/reporteEncuesta', async (req, res) => {
                                                             $eq: ["$_id", "$$idRespuesta"]
                                                         }
                                                     }
+                                                },
+                                                {
+                                                    $project: {
+                                                        "strRespuesta": 1,
+                                                        "_id": 0
+                                                    }
                                                 }
                                             ],
                                             as: "respuesta"
                                         }
+                                    },
+                                    {
+                                        $project: {
+                                            "pregunta": 1,
+                                            "respuesta": 1,
+                                            "_id": 0
+                                        }
                                     }
                                 ],
                                 as: "encuesta"
+                            }
+                        },
+                        {
+                            $project: {
+                                "encuesta": 1,
+                                "strCorreo": 1,
+                                "strNombre": 1,
+                                "strPrimerApellido": 1,
+                                "strSegundoApellido": 1,
+                                "strPuesto": 1,
+                                "_id": 0
                             }
                         }
 
                     ],
                     as: "persona"
                 }
+            },
+            {
+                $project: {
+                    "_id": 0
+                }
             }
-            // {
-            //     $lookup: {
-            //         from: "participante",
-            //         localField: "_id",
-            //         foreignField: "_id",
-            //         as: "persona"
-            //     }
-            // },
-
         ])
 
         res.status(200).json({
             cont: {
-                encuesta
+                encuesta,
             }
         })
     } catch (error) {
