@@ -41,16 +41,42 @@ app.get('/', async (req, res) => {
 app.get('/participantes', async (req, res) => {
     let participantes = [];
     try {
-        participantes = await ParticipanteModel.aggregate([{
-            $project: {
-                strNombre: 1,
-                strPrimerApellido: 1,
-                strSegundoApellido: 1,
-                strNombreEmpresa: 1,
-                strPuesto: 1,
-                strCorreo: 1
-            }
-        }]);
+        participantes = await ParticipanteModel.aggregate([
+
+            {
+                $lookup: {
+                    from: "conferencia",
+                    let: { arrIdConferencia: "$arrIdConferencia" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $in: ["$_id", "$$arrIdConferencia"]
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                "strNombre": 1,
+                                "_id": 0
+                            }
+                        }
+                    ],
+                    as: "conferencias"
+                }
+            },
+            {
+                $project: {
+                    strNombre: 1,
+                    strPrimerApellido: 1,
+                    strSegundoApellido: 1,
+                    strNombreEmpresa: 1,
+                    strPuesto: 1,
+                    strCorreo: 1,
+                    conferencias: 1
+                }
+            },
+        ]);
         return res.status(200).json({
             ok: true,
             resp: 200,
@@ -90,20 +116,61 @@ app.get('/conferencias', async (req, res) => {
                 arrIdParticipante: 1,
                 strNombre: 1,
             }
-        }, {
+        },
+        {
             $unwind: "$arrIdParticipante"
-        }, {
+        },
+        {
             $lookup: {
                 from: "participante",
-                localField: "arrIdParticipante",
-                foreignField: "_id",
+                let: { arrIdParticipante: "$arrIdParticipante" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $eq: ["$_id", "$$arrIdParticipante"]
+                            }
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "conferencia",
+                            let: { arrIdConferencia: "$arrIdConferencia" },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: {
+                                            $in: ["$_id", "$$arrIdConferencia"]
+                                        }
+                                    }
+                                },
+                                {
+                                    $project: {
+                                        "strNombre": 1,
+                                        "_id": 0
+                                    }
+                                }
+                            ],
+                            as: "conferencias"
+                        }
+                    }
+
+                ],
                 as: "persona"
             }
-        }, {
-            $project: {
-                persona: 1
-            }
-        }]);
+            // $lookup: {
+            //     from: "participante",
+            //     localField: "arrIdParticipante",
+            //     foreignField: "_id",
+            //     as: "persona"
+            // }
+        }
+            //     , {
+            //     $project: {
+            //         persona: 1
+            //     }
+            // }
+        ]);
         return res.status(200).json({
             ok: true,
             resp: 200,
