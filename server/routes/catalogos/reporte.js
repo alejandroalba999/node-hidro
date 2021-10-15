@@ -39,9 +39,8 @@ app.get('/', async (req, res) => {
     }
 })
 app.get('/participantes', async (req, res) => {
-    let participantes = [];
     try {
-        participantes = await ParticipanteModel.aggregate([
+        const participantes = await ParticipanteModel.aggregate([
 
             {
                 $lookup: {
