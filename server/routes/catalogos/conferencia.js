@@ -27,7 +27,13 @@ app.get('/', async (req, res) => {
                     dteFechaInicioUnix: { "$toLong": "$dteFechaInicio" }
                 }
             },
-        
+            // {
+            //     $match: {
+            //         $and: [
+            //             { dteFechaInicioUnix: { $gte: moment().locale('es-mx').subtract(moment().locale('es-mx').isDST() ? 5 : 6, 'hours').valueOf() } }
+            //         ]
+            //     }
+            // },
             { $addFields: { numParticipantes: { $size: "$arrIdParticipante" } } },
             { $addFields: { participantesRestantes: { $subtract: [totalParticipantes, { $size: "$arrIdParticipante" }] } } },
 
@@ -177,11 +183,11 @@ app.get('/fecha', async (req, res) => {
             {
                 $addFields: { "creationDate": { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$dteFechaInicio" } } }
             },
-            {
+            // {
 
-                $match: { creationDate: { $gte: moment().tz('es-mx').format('YYYY-MM-DD HH:mm') } }
+            //     $match: { creationDate: { $gte: moment().tz('es-mx').format('YYYY-MM-DD HH:mm') } }
 
-            },
+            // },
             {
                 $addFields: { numParticipantes: { $size: "$arrIdParticipante" } }
             },
